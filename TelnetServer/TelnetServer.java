@@ -54,20 +54,23 @@ public class TelnetServer {
             String inputLine;
             String nullStr=null;
             while ((inputLine = in.readLine()) != null) {
-		Process process = Runtime.getRuntime().exec(inputLine);
+                ProcessBuilder processB=new ProcessBuilder("bash", "-c", inputLine);
+                processB.redirectErrorStream(true);
+		Process process = processB.start();
+                
                      BufferedReader br = new BufferedReader(
                         new InputStreamReader(process.getInputStream()));
-                     BufferedReader errorReader = new BufferedReader(
-                        new InputStreamReader(process.getErrorStream()));
-                     while((inputLine=br.readLine())!=null || (inputLine=errorReader.readLine())!=null){
+               //      BufferedReader errorReader = new BufferedReader(
+                 //       new InputStreamReader(process.getErrorStream()));
+                     while((inputLine=br.readLine())!=null){
                         out.println(inputLine);
                         System.out.println("Log: "+ inputLine);
                     }
+                    
                      out.println("bye");
                      out.flush();
                      System.out.println("Bye Input!");
                      System.out.println("Bye Error!");
-                     errorReader.close();
                      br.close();
                      process.destroy();
                      
